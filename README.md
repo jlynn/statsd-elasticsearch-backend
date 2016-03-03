@@ -131,7 +131,7 @@ As of 0.4.0 you can now choose to use from a selection of metric key formatters 
 
 The config value _formatter_ will resolve to the name of a file under lib/ with a .js extension added to it.
 
-````
+```
 formatter:  my_own_format  # this will require ('lib/' + 'my_own_format' + '.js);
 ```
 In this module you will need to export a number of functions.  The 4 that are supported right now are:
@@ -143,3 +143,40 @@ gauges( key, value, ts, array )
 ```
 
 Look at lib/default\_format.js for a template to build your own.
+
+
+## Configure AWS Elasticsearch Domain
+
+If you are forwarding requests to an AWS Elasticsearch Domain, your requests will need to be signed either by the machines IAM role or using an access key and secret key pair.
+
+By setting the config value _client_ to `aws_client`, all elasticsearch requests will be signed using the AWS js SDK.
+
+```
+client: "aws_client"  # this will require('lib/aws_client.js');
+```
+
+AWS settings can be configured in the _elasticsearch_ config value:
+
+```js
+
+ backends: [ 'statsd-elasticsearch-backend', 'other-backends'],
+ elasticsearch: {
+	 host:          "searchdomain.region.es.amazonaws.com",
+	 indexPrefix:   "statsd",
+	 //indexTimestamp: "year",  //for index statsd-2015 
+	 //indexTimestamp: "month", //for index statsd-2015.01
+	 indexTimestamp: "day",     //for index statsd-2015.01.01
+	 countType:     "counter",
+	 timerType:     "timer",
+	 timerDataType: "timer_data",
+	 gaugeDataType: "gauge",
+     formatter:     "default_format",
+     client:        "aws_client",
+     aws: {
+         region:          "us-west-2",
+         accessKeyId:     "",
+         secretAccessKey: ""
+     }
+ }
+```
+You can leave _accessKeyId_ and _secretAccessKey_ unspecified to use the instance IAM role.

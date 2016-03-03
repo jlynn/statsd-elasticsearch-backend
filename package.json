@@ -22,7 +22,8 @@
     "node": ">=0.8"
   },
   "dependencies": {
-    "named-regexp": "^0.1.1"
+    "named-regexp": "^0.1.1",
+    "aws-sdk": "~2.0.15"
   },
   "devDependencies": {},
   "main": "lib/elasticsearch.js"
